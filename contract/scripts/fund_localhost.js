@@ -1,3 +1,5 @@
+const addressToFund = process.env.ADDRESS_TO_FUND || "0FDc6c84f5928ee00D894d90E398CC6f53871949"
+
 // We require the Hardhat Runtime Environment explicitly here. This is optional
 // but useful for running the script in a standalone fashion through `node <script>`.
 //
@@ -6,12 +8,14 @@
 const hre = require("hardhat");
 
 async function main() {
-  const CFNFT = await hre.ethers.getContractFactory("CFNFT");
-  const cfnft = await CFNFT.deploy();
+  const [wallet1] = await hre.ethers.getSigners()
 
-  await cfnft.deployed();
+  await wallet1.sendTransaction({
+    to: addressToFund,
+    value: ethers.utils.parseEther("10.0")
+  })
 
-  console.log("CFNFT deployed to:", cfnft.address);
+  console.log("Transferred 10 ETH to ", addressToFund);
 }
 
 main()
