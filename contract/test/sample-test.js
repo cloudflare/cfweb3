@@ -86,7 +86,7 @@ describe("CFNFT", function () {
   });
 
   it("Can't mint once over limit", async function () {
-    this.timeout(40000)
+    this.timeout(160000)
 
     const CFNFT = await ethers.getContractFactory("CFNFT");
     const cfnft = await CFNFT.deploy();

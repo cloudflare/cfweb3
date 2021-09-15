@@ -34,7 +34,7 @@
 
 <main>
 	{#if account}
-		<h1>Logged in as {account}</h1>
+		<h1>Logged in as {account.slice(0, 5)}</h1>
 		{#if loading}
 			<p>Transaction processing...</p>
 		{/if}
