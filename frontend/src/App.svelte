@@ -1,10 +1,13 @@
 <script>
-	import Contract from "../../contract/artifacts/contracts/CFNFT.sol/CFNFT.json";
+	import Contract from "./CFNFT.json";
 	import { ethers } from "ethers";
 
 	const CONTRACT_ID = "0x290422EC6eADc2CC12aCd98C50333720382CA86B";
 
 	let account = null;
+	let minted = false;
+	let loading = false;
+
 	const login = async () => {
 		const accounts = await ethereum.request({ method: "eth_requestAccounts" });
 		account = accounts[0];
@@ -21,50 +24,41 @@
 		const CFNFT = new ethers.Contract(CONTRACT_ID, Contract.abi, provider);
 		const contract = CFNFT.connect(signer);
 		await contract.mintToken(1, account);
-
-		// const MyContract = await getContractFactory("CFNFT");
-		// const myContract = new Contract(CFNFT, CFNFT.interface, accounts[0]);
-		// const contractAddress = await contract.options.address; // correctly outputs
-
-		// const transactionParameters = {
-		// 	to: contract.address,
-		// 	from: ethereum.selectedAddress,
-		// };
-
-		// const txHash = await ethereum.request({
-		// 	method: "eth_mintToken",
-		// 	params: [transactionParameters],
-		// });
+		loading = true;
+		contract.on("Minted", (from, to, amount, event) => {
+			minted = true;
+			loading = false;
+		});
 	};
 </script>
 
 <main>
 	{#if account}
-		<div>Logged in</div>
+		<h1>Logged in as {account}</h1>
+		{#if loading}
+			<p>Transaction processing...</p>
+		{/if}
+		{#if minted}
+			<p>
+				You minted an NFT! If you haven't already, add a new asset to Metamask
+				using the below info
+			</p>
+			<ul>
+				<li>Contract address: {CONTRACT_ID}</li>
+				<li>Token symbol: CFNFT</li>
+				<li>Token decimal: 0</li>
+			</ul>
+		{/if}
 		<button on:click={mint}>Mint</button>
 	{:else}
+		<h1>Login with Metamask to mint your NFT</h1>
 		<button on:click={login}>Login</button>
 	{/if}
 </main>
 
 <style>
 	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
+		margin: 4rem auto;
+		max-width: 40rem;
 	}
 </style>
