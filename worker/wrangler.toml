@@ -1,0 +1,10 @@
+name = "nft"
+type = "javascript"
+
+account_id = "e9bc21da719562a3e45d77de7dd042de"
+workers_dev = true
+
+[build]
+command = "npm install && npm run build"
+[build.upload]
+format = "service-worker"
