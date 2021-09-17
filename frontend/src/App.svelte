@@ -10,6 +10,7 @@
   const CFNFT = new ethers.Contract(CONTRACT_ID, Contract.abi, provider);
   const contract = CFNFT.connect(signer);
 
+
   let currentMinted = -1;
   let account = null;
   let minted = false;
@@ -20,6 +21,7 @@
     const accounts = await ethereum.request({ method: "eth_requestAccounts" });
     account = accounts[0];
     findCurrentMinted();
+    findCurrentOwned();
   };
 
   ethereum.on("accountsChanged", function (accounts) {
@@ -36,6 +38,14 @@
       currentMinted += 1;
     });
   };
+
+  const findCurrentOwned = async () => {
+    const numberOfTokensOwned = await contract.balanceOf(account);
+    for (let i = 0; i < Number(numberOfTokensOwned); i++) {
+      const token = await contract.tokenOfOwnerByIndex(account, i);
+      console.log(Number(token))
+    }
+  }
 
   const findCurrentMinted = async () => {
     const supply = await contract.totalSupply();
