@@ -23,7 +23,7 @@ const API = new Router();
 API.add('GET', '/nft/:id', async (req, res) => {
   const { params: { id } } = req
   res.setHeader('Cache-Control', 'public, max-age=60');
-  res.send(200, constructNft(id));
+  res.send(200, JSON.stringify(constructNft(id)));
 });
 
 API.add('POST', '/nfts', async (req, res) => {
@@ -39,7 +39,7 @@ API.add('POST', '/nfts', async (req, res) => {
 
   const nfts = input.ids.map(id => constructNft(id))
 
-  res.send(201, { nfts });
+  res.send(200, JSON.stringify({ nfts }));
 });
 
 Cache.listen(API.run);
