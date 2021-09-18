@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "worker",
+  "version": "1.0.0",
+  "description": "A template for kick starting a Cloudflare Workers project",
+  "main": "build/out.js",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write '**/*.{js,css,json,md}'"
+  },
+  "author": "Kristian Freeman <kristian@kristianfreeman.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-typescript": "^8.2.5",
+    "prettier": "^1.18.2",
+    "rollup": "^2.56.3",
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "dependencies": {
+    "worktop": "^0.7.3"
+  }
+}
