@@ -15,11 +15,13 @@
   let minted = false;
   let loading = false;
   let quantity = 1;
+  let ownedTokens = [];
 
   const login = async () => {
     const accounts = await ethereum.request({ method: "eth_requestAccounts" });
     account = accounts[0];
     findCurrentMinted();
+    findCurrentOwned();
   };
 
   ethereum.on("accountsChanged", function (accounts) {
@@ -36,6 +38,20 @@
       currentMinted += 1;
     });
   };
+
+  const findCurrentOwned = async () => {
+    const numberOfTokensOwned = await contract.balanceOf(account);
+    for (let i = 0; i < Number(numberOfTokensOwned); i++) {
+      const token = await contract.tokenOfOwnerByIndex(account, i);
+      const URI = await contract.tokenURI(token);
+      const response = await fetch(URI);
+
+      const result = await response.json();
+
+      ownedTokens.push(result);
+      ownedTokens = ownedTokens;
+    }
+  }
 
   const findCurrentMinted = async () => {
     const supply = await contract.totalSupply();
@@ -75,6 +91,18 @@
     <section>
       <span>{currentMinted}/2048 minted</span>
     </section>
+
+    {#if ownedTokens }
+      <section>
+        <ul>
+          {#each ownedTokens as token}
+            <span>{token.name}</span>
+            <span>{token.description}</span>
+            <img src={token.image} alt="" />
+          {/each}
+        </ul>
+      </section>
+    {/if}
   {:else}
     <h1>Login with Metamask to mint your NFT</h1>
     <button on:click={login}>Login</button>
@@ -89,5 +117,10 @@
 
   input[type="number"] {
     width: 12rem;
+  }
+
+  img {
+    width: 125px;
+    height: 125px;
   }
 </style>
