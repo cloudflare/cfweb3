@@ -48,8 +48,7 @@
       const response = await fetch(URI);
 
       const result = await response.json();
-      ownedTokens.push(result);
-      ownedTokens = ownedTokens;
+      ownedTokens = [...ownedTokens, result];
     }
   }
 
