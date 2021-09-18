@@ -10,7 +10,6 @@
   const CFNFT = new ethers.Contract(CONTRACT_ID, Contract.abi, provider);
   const contract = CFNFT.connect(signer);
 
-
   let currentMinted = -1;
   let account = null;
   let minted = false;
