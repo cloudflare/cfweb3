@@ -1,5 +1,6 @@
 import { Router } from 'worktop';
 import * as Cache from 'worktop/cache';
+import * as CORS from 'worktop/cors';
 
 interface NFTs {
   ids: string[];
@@ -19,6 +20,12 @@ const constructNft = (id: string): NFT => ({
 
 
 const API = new Router();
+
+API.prepare = CORS.preflight({
+  origin: '*', // allow any `Origin` to connect
+  headers: ['Cache-Control', 'Content-Type', 'X-Count'],
+  methods: ['GET', 'HEAD', 'PUT', 'POST', 'DELETE'],
+});
 
 API.add('GET', '/nft/:id', async (req, res) => {
   const { params: { id } } = req
