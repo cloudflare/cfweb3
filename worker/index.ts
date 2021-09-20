@@ -2,10 +2,6 @@ import { Router } from 'worktop';
 import * as Cache from 'worktop/cache';
 import * as CORS from 'worktop/cors';
 
-interface NFTs {
-  ids: string[];
-}
-
 interface NFT {
   name: string;
   description: string;
@@ -31,22 +27,6 @@ API.add('GET', '/nft/:id', async (req, res) => {
   const { params: { id } } = req
   res.setHeader('Cache-Control', 'public, max-age=60');
   res.send(200, constructNft(id));
-});
-
-API.add('POST', '/nfts', async (req, res) => {
-  try {
-    var input = await req.body<NFTs>();
-  } catch (err) {
-    return res.send(400, 'Error parsing request body');
-  }
-
-  if (!input || !input.ids) {
-    return res.send(422, { ids: 'required' });
-  }
-
-  const nfts = input.ids.map(id => constructNft(id))
-
-  res.send(200, { nfts });
 });
 
 Cache.listen(API.run);
