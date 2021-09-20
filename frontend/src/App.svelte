@@ -89,7 +89,12 @@
         placeholder="Quantity to mint"
         bind:value={quantity}
       />
-      <button disabled={currentMinted >= maxTokens} type="submit">Mint</button>
+
+      {#if currentMinted >= maxTokens}
+        <button disabled type="submit">Sold out</button>
+      {:else}
+        <button type="submit">Mint</button>
+      {/if}
     </form>
 
     <section>
