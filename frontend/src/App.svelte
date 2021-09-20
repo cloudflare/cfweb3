@@ -10,6 +10,7 @@
   const CFNFT = new ethers.Contract(CONTRACT_ID, Contract.abi, provider);
   const contract = CFNFT.connect(signer);
 
+  let maxTokens = -1;
   let currentMinted = -1;
   let account = null;
   let minted = false;
@@ -54,7 +55,10 @@
   }
 
   const findCurrentMinted = async () => {
+    const total = await contract.MAX_TOKENS();
     const supply = await contract.totalSupply();
+
+    maxTokens = Number(total);
     currentMinted = Number(supply);
   };
 </script>
@@ -85,7 +89,12 @@
         placeholder="Quantity to mint"
         bind:value={quantity}
       />
-      <button type="submit">Mint</button>
+
+      {#if currentMinted >= maxTokens}
+        <button disabled type="submit">Sold out</button>
+      {:else}
+        <button type="submit">Mint</button>
+      {/if}
     </form>
 
     <section>
