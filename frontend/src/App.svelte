@@ -18,11 +18,23 @@
   let quantity = 1;
   let ownedTokens = [];
 
+  const init = async () => {
+    if (!account && ethereum.selectedAddress) {
+      account = ethereum.selectedAddress;
+    }
+
+    if (account) {
+      findCurrentOwned();
+      findCurrentMinted();
+    }
+  };
+
   const login = async () => {
-    const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+    const accounts = await ethereum.request({
+      method: "eth_requestAccounts",
+    });
     account = accounts[0];
-    findCurrentMinted();
-    findCurrentOwned();
+    init();
   };
 
   ethereum.on("accountsChanged", function (accounts) {
@@ -50,9 +62,9 @@
       const result = await response.json();
 
       ownedTokens.push(result);
-      ownedTokens = ownedTokens;
     }
-  }
+    ownedTokens = ownedTokens;
+  };
 
   const findCurrentMinted = async () => {
     const total = await contract.MAX_TOKENS();
@@ -61,8 +73,9 @@
     maxTokens = Number(total);
     currentMinted = Number(supply);
   };
-</script>
 
+  init();
+</script>
 
 <header>
   <a href="/">Cloudflare Web3</a>
@@ -71,7 +84,9 @@
   </ul>
 </header>
 
-<div class="warning">This marketplace is connected to the Rinkeby test network.</div>
+<div class="warning">
+  This marketplace is connected to the Rinkeby test network.
+</div>
 
 <main>
   {#if account}
@@ -113,7 +128,7 @@
     </section>
 
     <h2>Your Tokens:</h2>
-    {#if ownedTokens }
+    {#if ownedTokens}
       <section>
         <ul class="grid">
           {#each ownedTokens as token}
@@ -130,7 +145,10 @@
         </ul>
       </section>
     {:else}
-      <section>You don't have any tokens. Mint one with the button above to add it to your collection.</section>
+      <section>
+        You don't have any tokens. Mint one with the button above to add it to
+        your collection.
+      </section>
     {/if}
   {:else}
     <h1>👋 Welcome to Cloudflare Web3.</h1>
