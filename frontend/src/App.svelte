@@ -63,9 +63,20 @@
   };
 </script>
 
+
+<header>
+  <a href="/">Cloudflare Web3</a>
+  <ul>
+    <li><a href="https://github.com/signalnerve/cfweb3">GitHub</a></li>
+  </ul>
+</header>
+
+<div class="warning">This marketplace is connected to the Rinkeby test network.</div>
+
 <main>
   {#if account}
-    <h1>Logged in as {account.slice(0, 5)}</h1>
+    <h1>👋 Welcome to the Cloudflare Web3 app</h1>
+    <h2>You are currently logged in as {account.slice(0, 5)}</h2>
     {#if loading}
       <p>Transaction processing...</p>
     {/if}
@@ -101,35 +112,35 @@
       <span>{currentMinted}/2048 minted</span>
     </section>
 
+    <h2>Your Tokens:</h2>
     {#if ownedTokens }
       <section>
-        <ul>
+        <ul class="grid">
           {#each ownedTokens as token}
-            <span>{token.name}</span>
-            <span>{token.description}</span>
-            <img src={token.image} alt="" />
+            <li>
+              <div class="grid-image">
+                <img src={token.image} alt="" />
+              </div>
+              <div class="grid-footer">
+                <h2>{token.name}</h2>
+                <span>{token.description}</span>
+              </div>
+            </li>
           {/each}
         </ul>
       </section>
+    {:else}
+      <section>You don't have any tokens. Mint one with the button above to add it to your collection.</section>
     {/if}
   {:else}
-    <h1>Login with Metamask to mint your NFT</h1>
+    <h1>👋 Welcome to Cloudflare Web3.</h1>
+    <h2>Login with Metamask to mint your NFT</h2>
     <button on:click={login}>Login</button>
   {/if}
 </main>
 
 <style>
-  main {
-    margin: 4rem auto;
-    max-width: 40rem;
-  }
-
   input[type="number"] {
     width: 12rem;
-  }
-
-  img {
-    width: 125px;
-    height: 125px;
   }
 </style>
