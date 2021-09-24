@@ -43,7 +43,7 @@ npm run dev
 1. Install [Metamask](https://metamask.io/)
 2. Switch Metamask to the Rinkeby test network
 
-![Metamask switch to testnet](./metamask-testnet.png)
+![Metamask switch to testnet](/metamask-testnet.png)
 
 3. Copy your Rinkeby account wallet address.
 
