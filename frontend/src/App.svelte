@@ -31,7 +31,7 @@
     init();
   }
 
-  const init = async () => {
+  async function init() {
     if (!account && ethereum.selectedAddress) {
       account = ethereum.selectedAddress;
     }
@@ -42,18 +42,19 @@
     } else {
       fetchRecentlyMinted();
     }
-  };
+  }
 
-  const login = async () => {
+  async function login() {
     const accounts = await ethereum.request({
       method: "eth_requestAccounts",
     });
     account = accounts[0];
     init();
-  };
+  }
 
-  const mint = async (evt) => {
+  async function mint(evt) {
     evt.preventDefault();
+
     await contractWithSigner.mintToken(quantity, account);
     loading = true;
     contractWithSigner.on("Minted", (from, to, amount, event) => {
@@ -61,13 +62,13 @@
       loading = false;
       currentMinted += 1;
     });
-  };
+  }
 
-  const findCurrentOwned = async () => {
-    const numberOfTokensOwned = await contractWithSigner.balanceOf(account);
+  async function findCurrentOwned() {
+    const numberOfTokensOwned = await contract.balanceOf(account);
     for (let i = 0; i < Number(numberOfTokensOwned); i++) {
-      const token = await contractWithSigner.tokenOfOwnerByIndex(account, i);
-      const URI = await contractWithSigner.tokenURI(token);
+      const token = await contract.tokenOfOwnerByIndex(account, i);
+      const URI = await contract.tokenURI(token);
       const response = await fetch(URI);
 
       const result = await response.json();
@@ -75,22 +76,24 @@
       ownedTokens.push(result);
     }
     ownedTokens = ownedTokens;
-  };
+  }
 
-  const findCurrentMinted = async () => {
-    const total = await contractWithSigner.MAX_TOKENS();
-    const supply = await contractWithSigner.totalSupply();
+  async function findCurrentMinted() {
+    const total = await contract.MAX_TOKENS();
+    const supply = await contract.totalSupply();
 
     maxTokens = Number(total);
     currentMinted = Number(supply);
-  };
+  }
 
-  const fetchRecentlyMinted = async () => {
-    const recentMintEvents = await contractWithSigner.queryFilter({
+  async function fetchRecentlyMinted() {
+    let recentMintEvents = await contract.queryFilter({
       topics: [
         "0xb9203d657e9c0ec8274c818292ab0f58b04e1970050716891770eb1bab5d655e",
       ],
     });
+
+    recentMintEvents = recentMintEvents.slice(-3);
 
     await recentMintEvents.map(async (MintEvent) => {
       const URI = await contract.tokenURI(MintEvent.args.tokenId);
@@ -101,7 +104,7 @@
       recentlyMintedTokens.push(result);
       recentlyMintedTokens = recentlyMintedTokens;
     });
-  };
+  }
 </script>
 
 <header>
@@ -218,9 +221,3 @@
     </p>
   {/if}
 </main>
-
-<style>
-  input[type="number"] {
-    width: 12rem;
-  }
-</style>
