@@ -49,6 +49,10 @@ input:disabled {
   color: #ccc;
 }
 
+input[type="number"] {
+  width: 12rem;
+}
+
 button {
   appearance: button;
   backface-visibility: hidden;
