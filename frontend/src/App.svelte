@@ -3,13 +3,9 @@
   import { ethers } from "ethers";
 
   const CONTRACT_ID = "0x290422EC6eADc2CC12aCd98C50333720382CA86B";
-
   const ethereum = window.ethereum;
-  const provider = new ethers.providers.Web3Provider(ethereum);
-  const signer = provider.getSigner();
 
-  const contract = new ethers.Contract(CONTRACT_ID, Contract.abi, provider);
-  const contractWithSigner = contract.connect(signer);
+  let provider, signer, contract, contractWithSigner;
 
   let maxTokens = -1;
   let currentMinted = -1;
@@ -19,6 +15,21 @@
   let quantity = 1;
   let ownedTokens = [];
   let recentlyMintedTokens = [];
+
+  // If Metamask is insalled
+  if (ethereum) {
+    provider = new ethers.providers.Web3Provider(ethereum);
+    signer = provider.getSigner();
+
+    contract = new ethers.Contract(CONTRACT_ID, Contract.abi, provider);
+    contractWithSigner = contract.connect(signer);
+
+    ethereum.on("accountsChanged", function (accounts) {
+      account = accounts[0];
+    });
+
+    init();
+  }
 
   const init = async () => {
     if (!account && ethereum.selectedAddress) {
@@ -40,10 +51,6 @@
     account = accounts[0];
     init();
   };
-
-  ethereum.on("accountsChanged", function (accounts) {
-    account = accounts[0];
-  });
 
   const mint = async (evt) => {
     evt.preventDefault();
@@ -95,8 +102,6 @@
       recentlyMintedTokens = recentlyMintedTokens;
     });
   };
-
-  init();
 </script>
 
 <header>
@@ -111,90 +116,103 @@
 </div>
 
 <main>
-  {#if account}
-    <h1>👋 Welcome to the Cloudflare Web3 app</h1>
-    <h2>You are currently logged in as {account.slice(0, 5)}</h2>
-    {#if loading}
-      <p>Transaction processing...</p>
-    {/if}
-    {#if minted}
-      <p>
-        You minted an NFT! If you haven't already, add a new asset to Metamask
-        using the below info
-      </p>
-      <ul>
-        <li>Contract address: {CONTRACT_ID}</li>
-        <li>Token symbol: CFNFT</li>
-        <li>Token decimal: 0</li>
-      </ul>
-    {/if}
-
-    <form on:submit={mint}>
-      <input
-        type="number"
-        min="1"
-        max="3"
-        placeholder="Quantity to mint"
-        bind:value={quantity}
-      />
-
-      {#if currentMinted >= maxTokens}
-        <button disabled type="submit">Sold out</button>
-      {:else}
-        <button type="submit">Mint</button>
+  {#if ethereum}
+    {#if account}
+      <h1>👋 Welcome to the Cloudflare Web3 app</h1>
+      <h2>You are currently logged in as {account.slice(0, 5)}</h2>
+      {#if loading}
+        <p>Transaction processing...</p>
       {/if}
-    </form>
-
-    <section>
-      <span>{currentMinted}/2048 minted</span>
-    </section>
-
-    <h2>Your Tokens:</h2>
-    {#if ownedTokens}
-      <section>
-        <ul class="grid">
-          {#each ownedTokens as token}
-            <li>
-              <div class="grid-image">
-                <img src={token.image} alt="" />
-              </div>
-              <div class="grid-footer">
-                <h2>{token.name}</h2>
-                <span>{token.description}</span>
-              </div>
-            </li>
-          {/each}
+      {#if minted}
+        <p>
+          You minted an NFT! If you haven't already, add a new asset to Metamask
+          using the below info
+        </p>
+        <ul>
+          <li>Contract address: {CONTRACT_ID}</li>
+          <li>Token symbol: CFNFT</li>
+          <li>Token decimal: 0</li>
         </ul>
-      </section>
-    {:else}
+      {/if}
+
+      <form on:submit={mint}>
+        <input
+          type="number"
+          min="1"
+          max="3"
+          placeholder="Quantity to mint"
+          bind:value={quantity}
+        />
+
+        {#if currentMinted >= maxTokens}
+          <button disabled type="submit">Sold out</button>
+        {:else}
+          <button type="submit">Mint</button>
+        {/if}
+      </form>
+
       <section>
-        You don't have any tokens. Mint one with the button above to add it to
-        your collection.
+        <span>{currentMinted}/2048 minted</span>
       </section>
+
+      <h2>Your Tokens:</h2>
+      {#if ownedTokens}
+        <section>
+          <ul class="grid">
+            {#each ownedTokens as token}
+              <li>
+                <div class="grid-image">
+                  <img src={token.image} alt="" />
+                </div>
+                <div class="grid-footer">
+                  <h2>{token.name}</h2>
+                  <span>{token.description}</span>
+                </div>
+              </li>
+            {/each}
+          </ul>
+        </section>
+      {:else}
+        <section>
+          You don't have any tokens. Mint one with the button above to add it to
+          your collection.
+        </section>
+      {/if}
+    {:else}
+      <h1>👋 Welcome to Cloudflare Web3.</h1>
+      <h2>Login with Metamask to mint your NFT</h2>
+      <button on:click={login}>Login</button>
+
+      <h2>Recently Minted NFTs:</h2>
+      {#if recentlyMintedTokens}
+        <section>
+          <ul class="grid">
+            {#each recentlyMintedTokens as token}
+              <li>
+                <div class="grid-image">
+                  <img src={token.image} alt="" />
+                </div>
+                <div class="grid-footer">
+                  <h2>{token.name}</h2>
+                  <span>{token.description}</span>
+                </div>
+              </li>
+            {/each}
+          </ul>
+        </section>
+      {/if}
     {/if}
   {:else}
-    <h1>👋 Welcome to Cloudflare Web3.</h1>
-    <h2>Login with Metamask to mint your NFT</h2>
-    <button on:click={login}>Login</button>
-
-    <h2>Recently Minted NFTs:</h2>
-    {#if recentlyMintedTokens}
-      <section>
-        <ul class="grid">
-          {#each recentlyMintedTokens as token}
-            <li>
-              <div class="grid-image">
-                <img src={token.image} alt="" />
-              </div>
-              <div class="grid-footer">
-                <h2>{token.name}</h2>
-                <span>{token.description}</span>
-              </div>
-            </li>
-          {/each}
-        </ul>
-      </section>
-    {/if}
+    <h1>This app requires a Metamask wallet.</h1>
+    <p>
+      You won't be asked to add any money. Install Metamask
+      <a href="https://metamask.io/">here</a>.
+    </p>
+    <p>
+      Then follow <a href="https://github.com/cloudflare/cfweb3"
+        >these instructions</a
+      > to get started.
+    </p>
   {/if}
 </main>
 
