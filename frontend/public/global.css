@@ -162,3 +162,15 @@ main {
   color: #000;
   font-size: 11px;
 }
+
+footer {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 0;
+  text-align: center;
+}
+
+footer img.icon {
+  height: 16px;
+  width: 16px;
+}
