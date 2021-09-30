@@ -9,7 +9,7 @@
   const signer = provider.getSigner();
 
   const contract = new ethers.Contract(CONTRACT_ID, Contract.abi, provider);
-  const authenticatedContract = contract.connect(signer);
+  const contractWithSigner = contract.connect(signer);
 
   let maxTokens = -1;
   let currentMinted = -1;
@@ -47,9 +47,9 @@
 
   const mint = async (evt) => {
     evt.preventDefault();
-    await authenticatedContract.mintToken(quantity, account);
+    await contractWithSigner.mintToken(quantity, account);
     loading = true;
-    authenticatedContract.on("Minted", (from, to, amount, event) => {
+    contractWithSigner.on("Minted", (from, to, amount, event) => {
       minted = true;
       loading = false;
       currentMinted += 1;
@@ -57,10 +57,10 @@
   };
 
   const findCurrentOwned = async () => {
-    const numberOfTokensOwned = await authenticatedContract.balanceOf(account);
+    const numberOfTokensOwned = await contractWithSigner.balanceOf(account);
     for (let i = 0; i < Number(numberOfTokensOwned); i++) {
-      const token = await authenticatedContract.tokenOfOwnerByIndex(account, i);
-      const URI = await authenticatedContract.tokenURI(token);
+      const token = await contractWithSigner.tokenOfOwnerByIndex(account, i);
+      const URI = await contractWithSigner.tokenURI(token);
       const response = await fetch(URI);
 
       const result = await response.json();
@@ -71,15 +71,15 @@
   };
 
   const findCurrentMinted = async () => {
-    const total = await authenticatedContract.MAX_TOKENS();
-    const supply = await authenticatedContract.totalSupply();
+    const total = await contractWithSigner.MAX_TOKENS();
+    const supply = await contractWithSigner.totalSupply();
 
     maxTokens = Number(total);
     currentMinted = Number(supply);
   };
 
   const fetchRecentlyMinted = async () => {
-    const recentMintEvents = await authenticatedContract.queryFilter({
+    const recentMintEvents = await contractWithSigner.queryFilter({
       topics: [
         "0xb9203d657e9c0ec8274c818292ab0f58b04e1970050716891770eb1bab5d655e",
       ],
