@@ -107,6 +107,9 @@
 <header>
   <a href="/">Cloudflare Web3</a>
   <ul>
+    <li>
+      <a href="https://testnets.opensea.io/collection/cfnft">View on OpenSea</a>
+    </li>
     <li><a href="https://github.com/signalnerve/cfweb3">GitHub</a></li>
   </ul>
 </header>

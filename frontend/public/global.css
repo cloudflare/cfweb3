@@ -101,7 +101,7 @@ header a:visited {
 }
 
 header ul {
-  display: inline-block;
+  display: flex;
   list-style: none;
 }
 
