@@ -4,11 +4,12 @@
 
   const CONTRACT_ID = "0x290422EC6eADc2CC12aCd98C50333720382CA86B";
 
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const ethereum = window.ethereum;
+  const provider = new ethers.providers.Web3Provider(ethereum);
   const signer = provider.getSigner();
 
-  const CFNFT = new ethers.Contract(CONTRACT_ID, Contract.abi, provider);
-  const contract = CFNFT.connect(signer);
+  const contract = new ethers.Contract(CONTRACT_ID, Contract.abi, provider);
+  const authenticatedContract = contract.connect(signer);
 
   let maxTokens = -1;
   let currentMinted = -1;
@@ -17,6 +18,7 @@
   let loading = false;
   let quantity = 1;
   let ownedTokens = [];
+  let recentlyMintedTokens = [];
 
   const init = async () => {
     if (!account && ethereum.selectedAddress) {
@@ -26,6 +28,8 @@
     if (account) {
       findCurrentOwned();
       findCurrentMinted();
+    } else {
+      fetchRecentlyMinted();
     }
   };
 
@@ -43,9 +47,9 @@
 
   const mint = async (evt) => {
     evt.preventDefault();
-    await contract.mintToken(quantity, account);
+    await authenticatedContract.mintToken(quantity, account);
     loading = true;
-    contract.on("Minted", (from, to, amount, event) => {
+    authenticatedContract.on("Minted", (from, to, amount, event) => {
       minted = true;
       loading = false;
       currentMinted += 1;
@@ -53,10 +57,10 @@
   };
 
   const findCurrentOwned = async () => {
-    const numberOfTokensOwned = await contract.balanceOf(account);
+    const numberOfTokensOwned = await authenticatedContract.balanceOf(account);
     for (let i = 0; i < Number(numberOfTokensOwned); i++) {
-      const token = await contract.tokenOfOwnerByIndex(account, i);
-      const URI = await contract.tokenURI(token);
+      const token = await authenticatedContract.tokenOfOwnerByIndex(account, i);
+      const URI = await authenticatedContract.tokenURI(token);
       const response = await fetch(URI);
 
       const result = await response.json();
@@ -67,11 +71,29 @@
   };
 
   const findCurrentMinted = async () => {
-    const total = await contract.MAX_TOKENS();
-    const supply = await contract.totalSupply();
+    const total = await authenticatedContract.MAX_TOKENS();
+    const supply = await authenticatedContract.totalSupply();
 
     maxTokens = Number(total);
     currentMinted = Number(supply);
+  };
+
+  const fetchRecentlyMinted = async () => {
+    const recentMintEvents = await authenticatedContract.queryFilter({
+      topics: [
+        "0xb9203d657e9c0ec8274c818292ab0f58b04e1970050716891770eb1bab5d655e",
+      ],
+    });
+
+    await recentMintEvents.map(async (MintEvent) => {
+      const URI = await contract.tokenURI(MintEvent.args.tokenId);
+      const response = await fetch(URI);
+
+      const result = await response.json();
+
+      recentlyMintedTokens.push(result);
+      recentlyMintedTokens = recentlyMintedTokens;
+    });
   };
 
   init();
@@ -154,6 +176,25 @@
     <h1>👋 Welcome to Cloudflare Web3.</h1>
     <h2>Login with Metamask to mint your NFT</h2>
     <button on:click={login}>Login</button>
+
+    <h2>Recently Minted NFTs:</h2>
+    {#if recentlyMintedTokens}
+      <section>
+        <ul class="grid">
+          {#each recentlyMintedTokens as token}
+            <li>
+              <div class="grid-image">
+                <img src={token.image} alt="" />
+              </div>
+              <div class="grid-footer">
+                <h2>{token.name}</h2>
+                <span>{token.description}</span>
+              </div>
+            </li>
+          {/each}
+        </ul>
+      </section>
+    {/if}
   {/if}
 </main>
 
