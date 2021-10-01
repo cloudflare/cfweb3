@@ -81,6 +81,7 @@
       const response = await fetch(URI);
 
       const result = await response.json();
+      result.id = token;
 
       ownedTokens.push(result);
     }
@@ -105,10 +106,12 @@
     recentMintEvents = recentMintEvents.slice(-3);
 
     await recentMintEvents.map(async (MintEvent) => {
-      const URI = await contract.tokenURI(MintEvent.args.tokenId);
+      const token = MintEvent.args.tokenId;
+      const URI = await contract.tokenURI(token);
       const response = await fetch(URI);
 
       const result = await response.json();
+      result.id = token;
 
       recentlyMintedTokens.push(result);
       recentlyMintedTokens = recentlyMintedTokens;
@@ -184,7 +187,11 @@
             {#each ownedTokens as token}
               <li>
                 <div class="grid-image">
-                  <img src={token.image} alt="" />
+                  <a
+                    href={`https://testnets.opensea.io/assets/0x290422ec6eadc2cc12acd98c50333720382ca86b/${token.id}`}
+                  >
+                    <img src={token.image} alt={token.description} />
+                  </a>
                 </div>
                 <div class="grid-footer">
                   <h2>{token.name}</h2>
@@ -212,7 +219,11 @@
             {#each recentlyMintedTokens as token}
               <li>
                 <div class="grid-image">
-                  <img src={token.image} alt="" />
+                  <a
+                    href={`https://testnets.opensea.io/assets/0x290422ec6eadc2cc12acd98c50333720382ca86b/${token.id}`}
+                  >
+                    <img src={token.image} alt={token.description} />
+                  </a>
                 </div>
                 <div class="grid-footer">
                   <h2>{token.name}</h2>
