@@ -72,6 +72,7 @@
       const response = await fetch(URI);
 
       const result = await response.json();
+      result.id = token;
 
       ownedTokens.push(result);
     }
@@ -168,7 +169,11 @@
             {#each ownedTokens as token}
               <li>
                 <div class="grid-image">
-                  <img src={token.image} alt="" />
+                  <a
+                    href={`https://testnets.opensea.io/assets/0x290422ec6eadc2cc12acd98c50333720382ca86b/${token.id}`}
+                  >
+                    <img src={token.image} alt="" />
+                  </a>
                 </div>
                 <div class="grid-footer">
                   <h2>{token.name}</h2>
