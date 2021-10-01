@@ -221,3 +221,12 @@
     </p>
   {/if}
 </main>
+
+<footer>
+  Built with <a href="https://pages.dev">Pages</a>
+  and <a href="https://workers.dev">Workers</a>, and open-source
+  <a href="https://github.com/cloudflare/cfweb3">on GitHub</a>.
+  <a href="https://blog.cloudflare.com/get-started-web3"
+    >Read the announcement blog post</a
+  >.
+</footer>
