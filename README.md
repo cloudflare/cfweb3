@@ -1,6 +1,6 @@
 # CFWeb3
 
-CFWeb3 is a Web3 demo application. It uses [Hardhat](https://github.com/nomiclabs/hardhat) and [Solidity](https://soliditylang.org/) to create an [Ethereum](https://ethereum.org/) smart contract.
+CFWeb3 is a Web3 demo application. It uses [Hardhat](https://github.com/nomiclabs/hardhat) and [Solidity](https://soliditylang.org/) to create an [Ethereum](https://ethereum.org/) smart contract. This code is a proof-of-concept showing how to [build Web3 applications with Cloudflare](https://blog.cloudflare.com/get-started-web3/), and should not be used as a production example.
 
 The contract offers 2048 tokens which can be minted via the frontend [Svelte](https://svelte.dev/) application. The entire app runs on the [Rinkeby](https://www.rinkeby.io/) test network.
 
