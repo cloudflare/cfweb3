@@ -1,11 +1,12 @@
 <script>
-  import Contract from "./CFNFT.json";
   import { ethers } from "ethers";
+  import { onMount } from "svelte";
+  import Contract from "./CFNFT.json";
 
   const CONTRACT_ID = "0x290422EC6eADc2CC12aCd98C50333720382CA86B";
   const ethereum = window.ethereum;
 
-  let provider, signer, contract, contractWithSigner;
+  let chain, provider, signer, contract, contractWithSigner;
 
   let maxTokens = -1;
   let currentMinted = -1;
@@ -16,7 +17,11 @@
   let ownedTokens = [];
   let recentlyMintedTokens = [];
 
-  // If Metamask is insalled
+  onMount(() => {
+    chain = window.ethereum.networkVersion;
+  });
+
+  // If Metamask is installed
   if (ethereum) {
     provider = new ethers.providers.Web3Provider(ethereum);
     signer = provider.getSigner();
@@ -26,6 +31,10 @@
 
     ethereum.on("accountsChanged", function (accounts) {
       account = accounts[0];
+    });
+
+    ethereum.on("chainChanged", function () {
+      window.location.reload();
     });
 
     init();
@@ -117,9 +126,16 @@
   </ul>
 </header>
 
-<div class="warning">
-  This marketplace is connected to the Rinkeby test network.
-</div>
+{#if chain === "4"}
+  <div class="warning">
+    This marketplace is connected to the Rinkeby test network.
+  </div>
+{:else}
+  <div class="error">
+    This application requires you to be on the Rinkeby network. Use Metamask to
+    switch networks.
+  </div>
+{/if}
 
 <main>
   {#if ethereum}

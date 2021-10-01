@@ -120,6 +120,13 @@ main {
   text-align: center;
 }
 
+.error {
+  background-color: #b00020;
+  color: #fff;
+  padding: 5px 0;
+  text-align: center;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
