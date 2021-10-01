@@ -174,7 +174,7 @@
                   <a
                     href={`https://testnets.opensea.io/assets/0x290422ec6eadc2cc12acd98c50333720382ca86b/${token.id}`}
                   >
-                    <img src={token.image} alt="" />
+                    <img src={token.image} alt={token.description} />
                   </a>
                 </div>
                 <div class="grid-footer">
@@ -206,7 +206,7 @@
                   <a
                     href={`https://testnets.opensea.io/assets/0x290422ec6eadc2cc12acd98c50333720382ca86b/${token.id}`}
                   >
-                    <img src={token.image} alt="" />
+                    <img src={token.image} alt={token.description} />
                   </a>
                 </div>
                 <div class="grid-footer">
