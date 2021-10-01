@@ -10,7 +10,7 @@ A live version of this demo app can be found at [cf-web3.pages.dev](https://cf-w
 
 ## Building locally
 
-1. Clone the repo with `git clone git@github.com:signalnerve/cfweb3.git`
+1. Clone the repo with `git clone git@github.com:cloudflare/cfweb3.git`
 2. npm install in `contract` and `frontend` with:
 
 ```sh
