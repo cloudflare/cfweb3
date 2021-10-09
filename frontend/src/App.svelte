@@ -62,8 +62,6 @@
   }
 
   async function mint() {
-
-
     await contractWithSigner.mintToken(quantity, account);
     loading = true;
     contractWithSigner.on("Minted", (from, to, amount, event) => {
@@ -83,8 +81,9 @@
       const result = await response.json();
       result.id = token;
 
-      ownedTokens = [...ownedTokens, result];
+      ownedTokens.push(result);
     }
+    ownedTokens = ownedTokens;
   }
 
   async function findCurrentMinted() {
@@ -101,6 +100,7 @@
         "0xb9203d657e9c0ec8274c818292ab0f58b04e1970050716891770eb1bab5d655e",
       ],
     });
+
     recentMintEvents = recentMintEvents.slice(-3);
 
     await recentMintEvents.map(async (MintEvent) => {
@@ -111,7 +111,8 @@
       const result = await response.json();
       result.id = token;
 
-      recentlyMintedTokens = [...recentlyMintedTokens, result];
+      recentlyMintedTokens.push(result);
+      recentlyMintedTokens = recentlyMintedTokens;
     });
   }
 </script>
