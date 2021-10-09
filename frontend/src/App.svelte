@@ -61,8 +61,8 @@
     init();
   }
 
-  async function mint(evt) {
-    evt.preventDefault();
+  async function mint() {
+
 
     await contractWithSigner.mintToken(quantity, account);
     loading = true;
@@ -83,9 +83,8 @@
       const result = await response.json();
       result.id = token;
 
-      ownedTokens.push(result);
+      ownedTokens = [...ownedTokens, result];
     }
-    ownedTokens = ownedTokens;
   }
 
   async function findCurrentMinted() {
@@ -102,7 +101,6 @@
         "0xb9203d657e9c0ec8274c818292ab0f58b04e1970050716891770eb1bab5d655e",
       ],
     });
-
     recentMintEvents = recentMintEvents.slice(-3);
 
     await recentMintEvents.map(async (MintEvent) => {
@@ -113,8 +111,7 @@
       const result = await response.json();
       result.id = token;
 
-      recentlyMintedTokens.push(result);
-      recentlyMintedTokens = recentlyMintedTokens;
+      recentlyMintedTokens = [...recentlyMintedTokens, result];
     });
   }
 </script>
@@ -160,7 +157,7 @@
         </ul>
       {/if}
 
-      <form on:submit={mint}>
+      <form on:submit|preventDefault={mint}>
         <input
           type="number"
           min="1"
