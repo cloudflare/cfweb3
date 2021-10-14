@@ -61,9 +61,7 @@
     init();
   }
 
-  async function mint(evt) {
-    evt.preventDefault();
-
+  async function mint() {
     await contractWithSigner.mintToken(quantity, account);
     loading = true;
     contractWithSigner.on("Minted", (from, to, amount, event) => {
@@ -160,7 +158,7 @@
         </ul>
       {/if}
 
-      <form on:submit={mint}>
+      <form on:submit|preventDefault={mint}>
         <input
           type="number"
           min="1"
