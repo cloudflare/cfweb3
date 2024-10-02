@@ -12,7 +12,7 @@ async function main() {
 
   await wallet1.sendTransaction({
     to: addressToFund,
-    value: ethers.utils.parseEther("10.0")
+    value: hre.ethers.utils.parseEther("10.0")
   })
 
   console.log("Transferred 10 ETH to ", addressToFund);
